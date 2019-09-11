@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
+import { useFetch } from "./hooks"
 
 function Joke() {
-  const [joke, setJoke] = useState({})
-
-  // useEffect can be used as componentDidMount
-  useEffect(() => {
-    fetch("https://official-joke-api.appspot.com/jokes/random")
-      .then(response => response.json())
-      .then(json => {
-        setJoke(json)
-      })
-  }, []) // This empty array tells the useEffect to run only once. If not, the setJoke will trigger a render and an infinite loop will be going 😱
-
-  const { setup, punchline } = joke
+  const { setup, punchline } = useFetch(
+    "https://official-joke-api.appspot.com/jokes/random",
+    {}
+  )
 
   return (
     <div>

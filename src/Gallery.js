@@ -5,12 +5,14 @@ function Gallery() {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       setIndex(storedIndex => (storedIndex + 1) % PICTURES.length) //If we're at the end, set the index to 0 i.e. length is 9. 9%9 is 0
     }, 3000)
-  }, [])
 
-  console.log("index", index)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
 
   return (
     <div className='Gallery'>

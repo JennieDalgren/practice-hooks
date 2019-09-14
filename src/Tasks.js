@@ -7,10 +7,18 @@ const storeTasks = taskMap => {
   localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(taskMap))
 }
 
+const readStoredTasks = () => {
+  const tasksMap = JSON.parse(localStorage.getItem(TASKS_STORAGE_KEY))
+  return tasksMap ? tasksMap : { tasks: [], completedTasks: [] }
+}
+
 function Tasks() {
   const [taskText, setTaskText] = useState("")
-  const [tasks, setTasks] = useState([])
-  const [completedTasks, setCompletedTasks] = useState([])
+  const storedTasks = readStoredTasks()
+  const [tasks, setTasks] = useState(storedTasks.tasks)
+  const [completedTasks, setCompletedTasks] = useState(
+    storedTasks.completedTasks
+  )
 
   useEffect(() => {
     storeTasks({ tasks, completedTasks })
@@ -22,6 +30,7 @@ function Tasks() {
 
   const addTask = () => {
     setTasks([...tasks, { taskText, id: uuid() }])
+    setTaskText("")
   }
 
   const completeTask = completedTask => () => {
@@ -33,11 +42,19 @@ function Tasks() {
     setCompletedTasks(completedTasks.filter(t => t.id !== task.id))
   }
 
+  const handleKeyPress = e => {
+    if (e.key === "Enter") addTask()
+  }
+
   return (
     <div>
       <h3>Tasks</h3>
       <div className='form'>
-        <input onChange={updateTaskText} value={taskText} />
+        <input
+          onChange={updateTaskText}
+          value={taskText}
+          onKeyPress={handleKeyPress}
+        />
         <button onClick={addTask}>Add task</button>
       </div>
       <div className='task-list'>
